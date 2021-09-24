@@ -9,8 +9,7 @@
 
 4. Зомби процессы не занимают ресурсов, но занимают имеющий ограничения пул доступных процессов  
   
-5. 
-582    dbus-daemon        -1   2 /usr/local/share/dbus-1/system-services  
+5. 582    dbus-daemon        -1   2 /usr/local/share/dbus-1/system-services  
 582    dbus-daemon        18   0 /usr/share/dbus-1/system-services  
 582    dbus-daemon        -1   2 /lib/dbus-1/system-services  
 582    dbus-daemon        18   0 /var/lib/snapd/dbus-1/system-services/  
