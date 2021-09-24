@@ -2,39 +2,37 @@
 
 1. chdir("/tmp")  
 
-2. в /usr/bin/file
+2. в /usr/share/misc/magic.mgc
 
 3. выполняем `lsof | grep delete` → в выводе ищем нужный нам удалённый файл и ИД процесса, использующего его и номер дескриптора → убиваем процесс → приводим размер файла к нолю используя truncate или `> /proc/[process_id"X"]/fd/[fd_num"Y"]`  
    
 
 4. Зомби процессы не занимают ресурсов, но занимают имеющий ограничения пул доступных процессов  
   
-5. `strace -e trace=openat file opensnoop-bpfcc`  
-openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3  
-openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libmagic.so.1", O_RDONLY|O_CLOEXEC) = 3  
-openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3  
-openat(AT_FDCWD, "/lib/x86_64-linux-gnu/liblzma.so.5", O_RDONLY|O_CLOEXEC) = 3  
-openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libbz2.so.1.0", O_RDONLY|O_CLOEXEC) = 3  
-openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libz.so.1", O_RDONLY|O_CLOEXEC) = 3  
-openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libpthread.so.0", O_RDONLY|O_CLOEXEC) = 3  
-openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3  
-openat(AT_FDCWD, "/etc/magic.mgc", O_RDONLY) = -1 ENOENT (No such file or directory)  
-openat(AT_FDCWD, "/etc/magic", O_RDONLY) = 3  
-openat(AT_FDCWD, "/usr/share/misc/magic.mgc", O_RDONLY) = 3  
-openat(AT_FDCWD, "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache", O_RDONLY) = 3  
-openat(AT_FDCWD, "opensnoop-bpfcc", O_RDONLY|O_NONBLOCK) = -1 ENOENT (No such file or directory)  
-opensnoop-bpfcc: cannot open `opensnoop-bpfcc' (No such file or directory)  
+5. 
+582    dbus-daemon        -1   2 /usr/local/share/dbus-1/system-services  
+582    dbus-daemon        18   0 /usr/share/dbus-1/system-services  
+582    dbus-daemon        -1   2 /lib/dbus-1/system-services  
+582    dbus-daemon        18   0 /var/lib/snapd/dbus-1/system-services/  
+834    vminfo              4   0 /var/run/utmp  
+  
 
-6. ff  
+6. Cистемный вызов uname  
+   Part of the utsname information is also accessible  via  /proc/sys/ker‐
+       nel/{ostype, hostname, osrelease, version, domainname}.  
 
 7. При `;` выполняется вторая команда вне зависимости от результата первой, а при `&&` вторая команда выполнится только при успехе первой.  
-  `set -e` прекращает выполнение скрипта, если команда завершилась с ошибкой, делает вывод в stderr. Так же для отдельной команды в конвеере можно отключить эту проверку. В некоторых ситуациях можно использовать этот функционал.   
+  `set -e` прекращает выполнение скрипта, если команда завершилась с ошибкой, делает вывод в stderr. Так же для отдельной команды в конвеере можно отключить эту проверку. В некоторых ситуациях можно использовать этот функционал, но только с учетом отключения проверки, иначе смысла нет.   
  
  8. e - прекращает выполнение скрипта если команда завершилась ошибкой, выводит в stderr строку с ошибкой, но только одной команды
     u - прекращает выполнение скрипта, если встретилась несуществующая переменная  
     x - выводит выполняемые команды в stdout перед выполненинем  
     o pipefail - прекращает выполнение скрипта, даже если одна из частей конвеера завершилась ошибкой. В этом случае bash-скрипт завершит выполнение, если mycommand вернёт ошибку, не смотря на true в конце конвеера. Если нужно убедиться, что все команды в пайпах завершились успешно, нужно использовать -o pipefail  
-    Каждый из этих параметров можно использовать по отдельности, а так же все вместе. Хорошей практикой считается второй вариант.  
     
- 9. 
+    Каждый из этих параметров можно использовать по отдельности, а так же все вместе. Хорошей практикой считается второй вариант. При таких опциях больше места "для манерва": управления логированием ошибок, упрощение дебага, повышение "отказоустойчивости" выполнения скрипта. 
+    
+ 9. Наиболее часто встечающиеся типы - это Ss и R+ (конкретно на моей машине)
+    s - обозначает главный процесс в сессии
+    l - мультипоточность
+    
   
